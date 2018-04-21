@@ -53,7 +53,8 @@ public class ShowListProduct {
                c1.add(b);
                
                b.addActionListener(e->{ 
-                    
+                     ShowProduct sp=new ShowProduct(image);
+                    sp.getF().show();
                
                });
                
