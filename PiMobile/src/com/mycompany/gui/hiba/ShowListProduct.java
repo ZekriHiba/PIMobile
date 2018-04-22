@@ -6,6 +6,7 @@
 package com.mycompany.gui.hiba;
 
 import com.codename1.components.ImageViewer;
+import com.codename1.components.SpanLabel;
 import com.codename1.ui.Button;
 import com.codename1.ui.Container;
 import com.codename1.ui.EncodedImage;
@@ -14,6 +15,15 @@ import com.codename1.ui.Image;
 import com.codename1.ui.Label;
 import com.codename1.ui.URLImage;
 import com.codename1.ui.layouts.BoxLayout;
+import com.codename1.ui.plaf.Border;
+import com.mycompany.entities.hiba.Product;
+import com.mycompany.services.hiba.ServiceProduct;
+import java.io.IOException;
+import java.util.ArrayList;
+
+
+
+
 
 
 /**
@@ -28,44 +38,68 @@ public class ShowListProduct {
     
     
     
-    public ShowListProduct(Image image) {
+    public ShowListProduct()  {
         f=new Form("Shop",BoxLayout.y());
+     
+           //  f.getStyle().setBgColor(0xC40C0C);
+           
+       
         
+        //*******************Recuperer la liste de produit de la base***************************************************
+        
+           ServiceProduct sp1=new ServiceProduct();
+           ArrayList<Product> list=sp1.showList();
    
         
-        
-        for(int j=0;j<5;j++)
-        {
-       Container c2 =new Container(BoxLayout.x());
-           for(int i=0;i<3;i++)
-           {
-               Container c1 =new Container(BoxLayout.y());
-               ImageViewer iv=new ImageViewer();
-               iv.setImage(image.scaled(100, 100));
-               Button b=new Button("hh");
+       //********************************Parcourir la liste**************************************************************** 
+        for(Product p : list)
+        {  
+               Container c1 =new Container(BoxLayout.x());
+               Container c3 =new Container(BoxLayout.y());
+              c1.getStyle().setBorder(Border.createLineBorder(2));
+              c1.getStyle().setMargin(1, 1, 1, 1);
+              c1.getStyle().setPadding(20, 20, 0, 0);
+
                
+           
+               
+        //****************************les elements du containers********************************************************
+               
+               ImageViewer iv=new ImageViewer();
+               
+           try {
+               iv.setImage(Image.createImage("/"+ p.getImg()).scaled(100, 100));
+           } catch (IOException ex) {
+                    System.out.println("err");
+           }
+              
+               //Button b=new Button(image2.scaled(30,30));
+               Button b=new Button("add");
+            
+              
+           
+               Label l1=new Label("$"+Float.toString(p.getPrice()));
+             //  l1.getStyle().set(0xC40C0C);
                
                
                
                c1.add(iv);
-               c1.add(new Label("name "));
-               c1.add(new Label("20$"));
-               c1.add(b);
+               c1.add(c3);
+               c3.add(new SpanLabel(p.getName()));
+               c3.add(l1);
+               c3.add(b);
+               
+            //*******************************Action sur le bouton add*****************************************************
                
                b.addActionListener(e->{ 
-                     ShowProduct sp=new ShowProduct(image);
+                    ShowProduct sp=new ShowProduct(p.getId_product());
                     sp.getF().show();
                
                });
                
-               
-        
        
-               
-        c2.add(c1);
-       
-           }
-            f.add(c2);
+           
+            f.add(c1);
         }
     }
 
