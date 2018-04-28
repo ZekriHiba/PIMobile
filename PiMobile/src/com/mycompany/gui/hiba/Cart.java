@@ -10,6 +10,7 @@ import com.codename1.components.SpanLabel;
 import com.codename1.ui.Button;
 import com.codename1.ui.ComponentGroup;
 import com.codename1.ui.Container;
+import com.codename1.ui.Dialog;
 import com.codename1.ui.Form;
 import com.codename1.ui.Image;
 import com.codename1.ui.Label;
@@ -18,6 +19,8 @@ import com.codename1.ui.layouts.BoxLayout;
 import com.codename1.ui.plaf.Border;
 import com.mycompany.entities.hiba.Command_Line;
 import com.mycompany.entities.hiba.Panier;
+import com.mycompany.entities.hiba.Product;
+import com.mycompany.services.hiba.ServiceProduct;
 import java.io.IOException;
 
 
@@ -28,18 +31,33 @@ import java.io.IOException;
  */
 public class Cart {
     Form f;
+    private int cmpt;
 
     public Cart() {
         f=new Form("cart",BoxLayout.y());
-        
-        
+        Menu m=new Menu(f);
        
-        Button b=new Button("back");
-        b.addActionListener(e->{
+        
+       f.getToolbar().addCommandToRightBar("Back", null, e->{
            ShowListProduct sp=new ShowListProduct();
            sp.getF().show();
+       });
+       
+       
+       
+        Button bpayer=new Button("PROCEED TO CHECKOUT");
+        bpayer.addActionListener(e->{
+            try {
+                Payement p=new Payement();
+                p.getF().show();
+            } catch (IOException ex) {
+                System.out.println("err");
+            } 
+            
         });
-        f.add(b);
+       
+       
+      
         
         
         //**********************************instanciation du panier********************************************************
@@ -65,22 +83,70 @@ public class Cart {
             } catch (IOException ex) {
                 System.out.println("err");
             }
-            
+            Label q=new Label(Integer.toString(c.getQuantity()));
+            Label lp=new Label("$"+Float.toString(c.getProduct().getPrice()*c.getQuantity()));
             Button bt=new Button("X");
             
             bt.addActionListener(e->{
                panier.removeLine(c);
+               c4.remove();
+               
+               f.revalidate();
                //ShowListProduct sp=new ShowListProduct();
                //sp.getF().show();
-               f.refreshTheme();
+               
+               
             });
             //********************les boutons de modif quantite******************************************
             Button b1=new Button("+");
             Button b2=new Button("-");
             bt.getStyle().setPadding(0,0,0,0);
            
-            
-                
+            b1.addActionListener(e -> {
+                cmpt = c.getQuantity();
+                 cmpt++;
+           ServiceProduct ps=new ServiceProduct();
+           Product pfound=ps.searchById(c.getProduct().getId_product());
+          if(cmpt<=pfound.getQuantity())
+                {
+                    
+                    c.setQuantity(cmpt);
+                    System.out.println("new quantity===>"+c.getQuantity());
+                    q.remove();
+                    f.revalidate();
+                    q.setText(String.valueOf(cmpt));
+                    lp.setText("$"+Float.toString(c.getProduct().getPrice()*c.getQuantity()));
+                    c2.add(q);
+                }
+          else
+          {
+              Dialog.show("Error!","Stock insuffisant!","ok", null);
+          }
+            });
+           b2.addActionListener(e -> {
+               
+           ServiceProduct ps=new ServiceProduct();
+           Product pfound=ps.searchById(c.getProduct().getId_product());
+           cmpt = c.getQuantity();
+          cmpt--;
+                if(cmpt<=0)
+                {
+                   panier.removeLine(c);
+                   c4.remove();
+                   f.revalidate();
+                }
+                else if(cmpt<=pfound.getQuantity())
+                {
+                    
+                    c.setQuantity(cmpt);
+                     q.remove();
+                    f.revalidate();
+                    q.setText(String.valueOf(cmpt));
+                    lp.setText("$"+Float.toString(c.getProduct().getPrice()*c.getQuantity()));
+                    c2.add(q);
+                }
+                f.revalidate();
+            });
             
             
             //*****************************mettre le bouton X au milieu****************************************************
@@ -98,22 +164,21 @@ public class Cart {
             c4.add(c1);
             c4.add(iv);
             
-            c2.add(new Label(Integer.toString(c.getQuantity())));
             c2.add(c5);
-            //c2.add(b2);
-            
-            //c3.add(new SpanLabel(c.getProduct().getName()));
+            c2.add(q);
+    
             c3.add(c2);
             
             
             c4.add(c3);
-            c4.add(new Label("$"+Float.toString(c.getProduct().getPrice()*c.getQuantity())));
+            c4.add(lp);
             
             
             
             cg.add(c4);
         }
         f.add(cg);
+        f.add(bpayer);
     }
 
     public Form getF() {
