@@ -1,4 +1,4 @@
-/*
+﻿/*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
@@ -110,6 +110,107 @@ public class ServiceProduct {
         });
         NetworkManager.getInstance().addToQueueAndWait(con);
         return listProducts;
+    }
+    
+    
+     public Product searchById(int id) {
+        ArrayList<Product> listProducts = new ArrayList<>();
+        ConnectionRequest con = new ConnectionRequest();
+        con.setUrl("http://localhost/piMobile/showProduct.php?Id_Product="+id);
+
+        con.addResponseListener(new ActionListener<NetworkEvent>() {
+            @Override
+            public void actionPerformed(NetworkEvent evt) {
+                //listTasks = getListTask(new String(con.getResponseData()));
+                JSONParser jsonp = new JSONParser();
+
+                try {
+                    //renvoi une map avec clé = root et valeur le reste
+                    Map<String, Object> products = jsonp.parseJSON(new CharArrayReader(new String(con.getResponseData()).toCharArray()));
+                    products.put("product", products.remove("root"));
+                   
+                    List<Map<String, Object>> list = (List<Map<String, Object>>) products.get("product");
+
+                    for (Map<String, Object> obj : list) {
+
+                        Product p = new Product();
+                        float id = Float.parseFloat(obj.get("Id_Product").toString());
+                        
+                        p.setId_product((int) id);
+                        p.setName(obj.get("Name").toString());
+                        p.setPrice(Float.parseFloat(obj.get("Price").toString()));
+                        p.setImg(obj.get("Type").toString());
+                        p.setImg(obj.get("Image").toString());
+                        p.setDescription(obj.get("Description").toString());
+                        p.setQuantity(Integer.parseInt(obj.get("Quantity").toString()));
+                        
+                        listProducts.add(p);
+
+                    }
+                } catch (IOException ex) {
+                }
+
+            }
+        });
+        NetworkManager.getInstance().addToQueueAndWait(con);
+        
+        Product pf=new Product();
+        for(Product p:listProducts)
+        {
+             pf=p;
+        }
+        return pf;
+    }
+     
+     
+     
+     public Product searchByName(String name) {
+        ArrayList<Product> listProducts = new ArrayList<>();
+        ConnectionRequest con = new ConnectionRequest();
+        con.setUrl("http://localhost/piMobile/searchProduct.php?name='"+name+"'");
+
+        con.addResponseListener(new ActionListener<NetworkEvent>() {
+            @Override
+            public void actionPerformed(NetworkEvent evt) {
+                //listTasks = getListTask(new String(con.getResponseData()));
+                JSONParser jsonp = new JSONParser();
+
+                try {
+                    //renvoi une map avec clé = root et valeur le reste
+                    Map<String, Object> products = jsonp.parseJSON(new CharArrayReader(new String(con.getResponseData()).toCharArray()));
+                    products.put("product", products.remove("root"));
+                   
+                    List<Map<String, Object>> list = (List<Map<String, Object>>) products.get("product");
+
+                    for (Map<String, Object> obj : list) {
+
+                        Product p = new Product();
+                        float id = Float.parseFloat(obj.get("Id_Product").toString());
+                        
+                        p.setId_product((int) id);
+                        p.setName(obj.get("Name").toString());
+                        p.setPrice(Float.parseFloat(obj.get("Price").toString()));
+                        p.setImg(obj.get("Type").toString());
+                        p.setImg(obj.get("Image").toString());
+                        p.setDescription(obj.get("Description").toString());
+                        p.setQuantity(Integer.parseInt(obj.get("Quantity").toString()));
+                        
+                        listProducts.add(p);
+
+                    }
+                } catch (IOException ex) {
+                }
+
+            }
+        });
+        NetworkManager.getInstance().addToQueueAndWait(con);
+        
+        Product pf=new Product();
+        for(Product p:listProducts)
+        {
+             pf=p;
+        }
+        return pf;
     }
     
     
