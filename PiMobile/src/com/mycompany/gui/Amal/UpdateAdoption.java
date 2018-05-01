@@ -8,11 +8,13 @@ package com.mycompany.gui.Amal;
 import com.codename1.ui.Button;
 import com.codename1.ui.ComboBox;
 import com.codename1.ui.Container;
+import com.codename1.ui.Dialog;
 import com.codename1.ui.Display;
 import com.codename1.ui.Font;
 import com.codename1.ui.FontImage;
 import com.codename1.ui.Form;
 import com.codename1.ui.Image;
+import com.codename1.ui.Label;
 import com.codename1.ui.TextArea;
 import com.codename1.ui.TextField;
 import com.codename1.ui.layouts.BoxLayout;
@@ -49,7 +51,8 @@ public class UpdateAdoption {
               c1.getStyle().setMargin(1, 1, 1, 1);
               c1.getStyle().setPadding(20, 20, 0, 0);
 
-               
+               Container c4 =new Container(BoxLayout.x());
+               Container c5 =new Container(BoxLayout.x());
            
                
         //****************************les elements du containers********************************************************
@@ -82,10 +85,12 @@ public class UpdateAdoption {
         { 
             TextField nickname = new TextField(a.getNick_Name(), "NickName", 20, TextArea.ANY);
             nickname.getStyle().setFgColor(0xffffff);
-            TextField poids = new TextField(String.valueOf(a.getWeight()), "poids", 4, TextArea.NUMERIC);  
-            poids.getStyle().setFgColor(0xffffff);
-            TextField taille = new TextField(String.valueOf(a.getSize()), "taille", 4, TextArea.NUMERIC);
-            taille.getStyle().setFgColor(0xffffff);
+            Label poids1 = new Label("Taille : ");  
+            poids1.getStyle().setFgColor(0xffffff);
+            Label poids=new Label(String.valueOf(a.getWeight()));
+            Label taille1 = new Label("Poids : ");
+            taille1.getStyle().setFgColor(0xffffff);
+            Label taille=new Label(String.valueOf(a.getWeight()));
             Picker age = new Picker(); 
             age.setDate(a.getAge());
             age.setType(Display.PICKER_TYPE_DATE);
@@ -108,14 +113,25 @@ public class UpdateAdoption {
                b.getStyle().setBgColor(45468);
                b.getAllStyles();
               
-             
+             Button b1=new Button("+");
+            Button b2=new Button("-");
+            Button b3=new Button("+");
+            Button b4=new Button("-");
                
                c3.add(spec);
                c3.addComponent(sspec);
                c1.add(c3);
                c3.add(nickname);
-               c3.add(poids);
-               c3.add(taille);
+               c4.add(poids1);
+               c4.add(b1);
+               c4.add(poids);
+               c4.add(b2);
+               c3.add(c4);
+               c5.add(taille1);
+               c5.add(b3);
+               c5.add(taille);
+               c5.add(b4);
+               c3.add(c5);
                c3.add(age);
                c3.add(description);
                c3.add(color);
@@ -140,10 +156,31 @@ public class UpdateAdoption {
 
             }, Display.GALLERY_IMAGE);
             });*/
-               
+           
+               b1.addActionListener(bb1->{
+            poids.setText(String.valueOf(Integer.parseInt(poids.getText())+1));
+            });
+            b2.addActionListener(bb1->{
+                if (Integer.parseInt(poids.getText())<=0){poids.setText(String.valueOf(0));}
+                else{poids.setText(String.valueOf(Integer.parseInt(poids.getText())-1));}
+            });
+            
+            b3.addActionListener(bb1->{
+            taille.setText(String.valueOf(Integer.parseInt(taille.getText())+1));
+            });
+            b4.addActionListener(bb1->{
+                if (Integer.parseInt(taille.getText())<=0){taille.setText(String.valueOf(0));}
+                else{taille.setText(String.valueOf(Integer.parseInt(taille.getText())-1));}
+            });
             //*******************************Action sur le bouton add*****************************************************
                
                b.addActionListener(e->{ 
+                    if ( nickname.getText().trim().toString().length()!=0
+                           && age.getDate().toString().length()!=0 && color.getText().trim().toString().length()!=0
+                         && description.getText().trim().toString().length()!=0 && gender.getText().trim().toString().length()!=0 
+                   && image.getText().trim().toString().length()!=0 && poids.getText()!="0" && taille.getText()!="0")
+                 {
+                  
                    S_Species s = new S_Species(); 
                    Species ss = new Species();
                     if(spec.getSelectedItem().toString()!=null)
@@ -175,7 +212,8 @@ public class UpdateAdoption {
                     ShowAdoption sp=new ShowAdoption();
                     sp.getF().show();
                 } catch (IOException ex) {
-                }
+                }}
+                    else {Dialog.show("Champs Obligatoire","Vueillez remplir tous les champs","ok", null);}
                
                });
                
