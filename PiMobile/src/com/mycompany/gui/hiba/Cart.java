@@ -5,6 +5,7 @@
  */
 package com.mycompany.gui.hiba;
 
+import com.mycompany.services.hiba.ServiceProduct;
 import com.codename1.components.ImageViewer;
 import com.codename1.components.SpanLabel;
 import com.codename1.ui.Button;
@@ -20,7 +21,7 @@ import com.codename1.ui.plaf.Border;
 import com.mycompany.entities.hiba.Command_Line;
 import com.mycompany.entities.hiba.Panier;
 import com.mycompany.entities.hiba.Product;
-import com.mycompany.services.hiba.ServiceProduct;
+
 import java.io.IOException;
 
 
