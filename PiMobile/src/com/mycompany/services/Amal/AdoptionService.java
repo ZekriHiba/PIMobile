@@ -16,13 +16,7 @@ import com.mycompany.entities.Amal.Request_Adoption;
 import com.mycompany.entities.Amal.S_Species;
 import com.mycompany.entities.Amal.Species;
 import java.io.IOException;
-import java.text.DateFormat;
-import java.text.Format;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -36,10 +30,71 @@ import java.util.Map;
 public class AdoptionService {
  
     
-    public ArrayList<Animal> showAdoption() {
+    public ArrayList<Animal> showAdoption(int user) {
+        
         ArrayList<Animal> listZanimo = new ArrayList<>();
         ConnectionRequest con = new ConnectionRequest();
-        con.setUrl("http://localhost/PIWeb33/web/app_dev.php/mobile/show");
+        con.setUrl("http://localhost/PIWeb33/web/app_dev.php/mobile/show/"+user);
+
+        con.addResponseListener(new ActionListener<NetworkEvent>() {
+            @Override
+            public void actionPerformed(NetworkEvent evt) {
+                //listTasks = getListTask(new String(con.getResponseData()));
+                JSONParser jsonp = new JSONParser();
+                try {
+                    //renvoi une map avec clÃ© = root et valeur le reste
+                    Map<String, Object> zanimo = jsonp.parseJSON(new CharArrayReader(new String(con.getResponseData()).toCharArray()));
+                    zanimo.put("Animal", zanimo.remove("root"));
+                   
+                   
+                  
+                    List<Map<String, Object>> list = (List<Map<String, Object>>) zanimo.get("Animal");
+                    for ( Map<String, Object> obj : list) {
+                        S_Species s = new S_Species(); 
+                        Animal a = new Animal();
+                        int id = (int)Float.parseFloat(obj.get("idAnimal").toString());
+                        a.setId_animal((int) id);
+                        
+                        s.setId_s_species((int)Float.parseFloat(obj.get("sSpeciesId").toString().substring(12,15)));
+                          
+                        a.setS(s);
+                        a.setSize((int)Float.parseFloat(obj.get("size").toString()));
+                        a.setWeight((int)Float.parseFloat(obj.get("weight").toString()));
+                        String myFormatString = "yyyy-MM-dd'T'HH:mm:ss.SSSX";
+                         
+                        String  c="1"+obj.get("age").toString().substring(114,122);
+                        int i=c.indexOf("E");
+                        String d=c.substring(0, i)+"00";
+                        if (d.length()==6){d=d+"0000";}
+                        if (d.length()==7){d=d+"000";}
+                        if (d.length()==8){d=d+"00";}
+                        if (d.length()==9){d=d+"0";}
+                        Date date1=new Date(Long.parseLong(d) * 1000L);
+                        a.setDescription(obj.get("description").toString());
+                        a.setImage1(obj.get("image").toString());
+                        a.setNick_Name(obj.get("nickName").toString());
+                        a.setColor(obj.get("color").toString());
+                        
+                        a.setGender(obj.get("gender").toString());
+                        
+                        
+                        listZanimo.add(a);
+
+                    }
+                } catch (IOException ex) {
+                }
+
+            }
+        });
+        NetworkManager.getInstance().addToQueueAndWait(con);
+        return listZanimo;
+    }
+    
+    public ArrayList<Animal> MyAnimals(int user) {
+        
+        ArrayList<Animal> listZanimo = new ArrayList<>();
+        ConnectionRequest con = new ConnectionRequest();
+        con.setUrl("http://localhost/PIWeb33/web/app_dev.php/mobile/MyAnimals/"+user);
 
         con.addResponseListener(new ActionListener<NetworkEvent>() {
             @Override
@@ -224,13 +279,13 @@ public class AdoptionService {
     }
 
     
-    public Animal insertAnimal(Animal a)
+    public Animal insertAnimal(Animal a,int user)
     {
         ConnectionRequest con = new ConnectionRequest();        
         con.setUrl("http://localhost/PIWeb33/web/app_dev.php/mobile/AddAnimal/"
                 +a.getS().getName()+"/"+
                 a.getSize()+"/"+a.getWeight()+"/"+a.getAge()+"/"+a.getDescription()+"/"+a.getImage()+"/"+
-                a.getNick_Name()+"/"+a.getColor()+"/"+a.getGender());
+                a.getNick_Name()+"/"+a.getColor()+"/"+a.getGender()+"/"+user);
         NetworkManager.getInstance().addToQueueAndWait(con);
         return a;
     }
@@ -253,18 +308,18 @@ public class AdoptionService {
         return a;
     }
     
-    public void AddWishlist(Animal a)
+    public void AddWishlist(Animal a,int user)
     {
     ConnectionRequest con = new ConnectionRequest();        
-        con.setUrl("http://localhost/PIWeb33/web/app_dev.php/mobile/AddWishlist/"+a.getId_animal());
+        con.setUrl("http://localhost/PIWeb33/web/app_dev.php/mobile/AddWishlist/"+a.getId_animal()+"/"+user);
         NetworkManager.getInstance().addToQueueAndWait(con);
     }
     
-    public String isWishlist(Animal a)
+    public String IsUser(Animal a,int user)
     {
-        ArrayList<String> response= new ArrayList();
+    ArrayList<String> response= new ArrayList();
         ConnectionRequest con = new ConnectionRequest();
-        con.setUrl("http://localhost/PIWeb33/web/app_dev.php/mobile/IsWishlit/"+a.getId_animal());
+        con.setUrl("http://localhost/PIWeb33/web/app_dev.php/mobile/IsUser/"+a.getId_animal()+"/"+user);
 
         con.addResponseListener(new ActionListener<NetworkEvent>() {
             @Override
@@ -272,18 +327,11 @@ public class AdoptionService {
                 //listTasks = getListTask(new String(con.getResponseData()));
                 JSONParser jsonp = new JSONParser();
                     //renvoi une map avec clÃ© = root et valeur le reste
-                    Map<String, Object> wish;
+                    String userr;
                 try {
-                    wish = jsonp.parseJSON(new CharArrayReader(new String(con.getResponseData()).toCharArray()));
-                 wish.put("Animal", wish.remove("root"));
-                    if(wish.entrySet().size()>2)
-                        { 
-                    String c="true";
-                        response.add(c);
-                        }
-                    else {String c="false";
-                    response.add(c);
-                    }
+                    userr = new String(con.getResponseData(),"utf-8");
+                 System.err.println(userr);
+                 response.add(userr);
 
                 } catch (IOException ex) {
                 }
@@ -294,22 +342,51 @@ public class AdoptionService {
         NetworkManager.getInstance().addToQueueAndWait(con);
         return response.get(0);
     }
+    public String isWishlist(Animal a,int user)
+    {
+        ArrayList<String> response= new ArrayList();
+        ConnectionRequest con = new ConnectionRequest();
+        con.setUrl("http://localhost/PIWeb33/web/app_dev.php/mobile/IsWishlit/"+a.getId_animal()+"/"+user);
+
+        con.addResponseListener(new ActionListener<NetworkEvent>() {
+            @Override
+            public void actionPerformed(NetworkEvent evt) {
+                //listTasks = getListTask(new String(con.getResponseData()));
+                JSONParser jsonp = new JSONParser();
+                    //renvoi une map avec clÃ© = root et valeur le reste
+                  //renvoi une map avec clÃ© = root et valeur le reste
+                    String wish;
+                try {
+                    wish = new String(con.getResponseData(),"utf-8");
+                 System.err.println(wish);
+                 response.add(wish);
+
+                } catch (IOException ex) {
+                }
+                      
+                                      
+
+            }
+        });
+        NetworkManager.getInstance().addToQueueAndWait(con);
+        return response.get(0);
+    }
     
-    public void DeleteWishlist(Animal a)
+    public void DeleteWishlist(Animal a,int user)
     {
     ConnectionRequest con = new ConnectionRequest();        
-        con.setUrl("http://localhost/PIWeb33/web/app_dev.php/mobile/DeleteWishlist/"+a.getId_animal());
+        con.setUrl("http://localhost/PIWeb33/web/app_dev.php/mobile/DeleteWishlist/"+a.getId_animal()+"/"+user);
         NetworkManager.getInstance().addToQueueAndWait(con);
     }
     
-     public void AddRequest(Request_Adoption r,int id)
+     public void AddRequest(Request_Adoption r,int id,int user)
     {
     ConnectionRequest con = new ConnectionRequest();     
     
         con.setUrl("http://localhost/PIWeb33/web/app_dev.php/mobile/AddRequest/"+id+"/"+r.isRaiser()+"/"+
                 r.getLocal()+"/"+r.isGarden()+"/"+r.isSpace()+"/"+r.getPlace()+"/"+r.getCarry()+"/"+
                 r.isNeighbour()+"/"+r.isChild()+"/"+r.isTime()+"/"+r.isBreed()+"/"+r.isEngagement()+"/"+
-                r.isHabits()+"/"+r.isCharges()+"/"+r.isReady()+"/"+r.isSacrifice()+"/"+r.isFamilly()+"/"+r.getDescription());
+                r.isHabits()+"/"+r.isCharges()+"/"+r.isReady()+"/"+r.isSacrifice()+"/"+r.isFamilly()+"/"+r.getDescription()+"/"+user);
         NetworkManager.getInstance().addToQueueAndWait(con);
     }
      
