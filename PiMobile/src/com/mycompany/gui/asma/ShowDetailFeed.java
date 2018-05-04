@@ -17,8 +17,13 @@ import com.codename1.ui.TextField;
 import com.codename1.ui.URLImage;
 import com.codename1.ui.layouts.BoxLayout;
 import com.codename1.ui.util.Resources;
+import com.mycompany.entities.asma.Article;
+import com.mycompany.entities.asma.Comment;
 import com.mycompany.entities.asma.Feed;
+import com.mycompany.services.asma.ServiceArticle;
 import com.mycompany.services.asma.ServiceComment;
+import java.util.ArrayList;
+import static java.util.Collections.list;
 
 /**
  *
@@ -26,7 +31,7 @@ import com.mycompany.services.asma.ServiceComment;
  */
 public class ShowDetailFeed {
     private Form form;
-    private Label titre;
+    private Label corp,titre;
     private ImageViewer imageviewer;
     private ImageViewer img;
     private EncodedImage encodedImage;
@@ -36,18 +41,20 @@ public class ShowDetailFeed {
     private String url="http://localhost/text.txt";
     private ConnectionRequest cr;
     private Label lb;
+   
 
     public ShowDetailFeed(Resources theme, Feed f) { 
         
         form =new Form("Detail Feed",BoxLayout.y());
         Container ctn = new Container(BoxLayout.x());
-         titre= new Label(f.getTitle());
-        Container ctn1= new Container(BoxLayout.x());
           encodedImage=EncodedImage.createFromImage(theme.getImage("round.png"), false);
           
           urlImage = URLImage.createToStorage(encodedImage,"tt"+String.valueOf(f.getTitle()),"http://localhost"+f.getImage(),URLImage.RESIZE_SCALE_TO_FILL);
           img =new ImageViewer(urlImage); 
         
+         titre= new Label(f.getTitle());
+         Container ctn1= new Container(BoxLayout.x());
+       
           Container ctn2= new Container(BoxLayout.y());
           commentaire = new TextField();
           commentaire.setText("");
@@ -58,23 +65,51 @@ public class ShowDetailFeed {
           
           ctn2.add(commentaire);
           comment = new Button("commenter");
-          comment.addActionListener(e->
-          {
-             ServiceComment sc = new ServiceComment();
-             
-          }
           
-          );
-            
           ctn2.add(comment);
           form.add(ctn);
           form.add(ctn1);
           form.add(ctn2);
           
-          form.getToolbar().addCommandToLeftBar("back", theme.getImage("back-command.png"), (e)->{
+          //display comments by title
+            ServiceComment c =new ServiceComment();
+           ArrayList<Comment> list=c.showComments("CAMPAGNES");
+           Container cntComment  =  new Container(BoxLayout.y());
+           int i=0;
+           
+           for(Comment co : list)
+    
+           { 
+             i++;
+            Container cont = new Container(BoxLayout.x());
+            corp= new Label(co.getCorp());
+            cont.add(corp);
+            cont.setLeadComponent(corp);
+            cntComment.add(cont);
+    
+           }
+          
+            comment.addActionListener(e->
+          {  
+              
+             cntComment.removeAll();
+             c.insertComment(2, "CAMPAGNES", commentaire.getText());
+             
+             ShowDetailFeed sh = new ShowDetailFeed(theme, f);
+             sh.getForm().show();
+        
+                                    
+            
+             
+             
+          });
+          form.add(cntComment);
+           
+          form.getToolbar().addCommandToLeftBar("back", theme.getImage("back-command.png"), 
+                  (e)->{
   
-          ShowListFeed sla = new ShowListFeed(theme);
-          sla.getForm().show();
+          ShowListFeed slf = new ShowListFeed();
+          slf.getForm().show();
           });
 
     }

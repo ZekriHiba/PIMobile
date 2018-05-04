@@ -22,13 +22,14 @@ import java.util.Map;
  *
  * @author User
  */
-public class ServiceComment {
 
-   public ArrayList<Comment> showComments(int user_ID, int title_feed) {
+public class ServiceComment {
+    
+
+   public ArrayList<Comment> showComments( String title_feed) {
         ArrayList<Comment> listComment = new ArrayList<>();
         ConnectionRequest con = new ConnectionRequest();
-        con.setUrl("http://localhost/WS/insertComment.php");
-                
+        con.setUrl("http://localhost/WS/getFeedByTitle?feed_id="+title_feed);
        
         con.addResponseListener(new ActionListener<NetworkEvent>() {
             @Override
@@ -46,13 +47,7 @@ public class ServiceComment {
                     for (Map<String, Object> obj : list) {
 
                         Comment c = new Comment();
-                   //    float id = Float.parseFloat(obj.get("").toString());
-                        
-                   //     f.setComment(obj.get("comment").toString());
                         c.setCorp(obj.get("corp").toString());
-                       
-                       /* a.setDescription(obj.get("Description").toString());
-                        a.setQuantity(Integer.parseInt(obj.get("Quantity").toString()));*/
                         
                         listComment.add(c);
 
@@ -67,13 +62,32 @@ public class ServiceComment {
         return listComment;
     }
    
-   
-   public void insertComment()
-  
-   { 
-       Comment c = new Comment();
-     
-   }
+   public void insertComment(int userId , String feedId ,String corp) {
+         
+        boolean  succes = false;
+        ConnectionRequest con = new ConnectionRequest();
+        String url = "http://localhost/WS/insertComment.php?user_ID="
+                + userId
+                + "&feed_ID=" 
+                + feedId
+               + "&corp=" 
+                + corp ;
+        con.setUrl(url);
+        System.out.println(url);        
+        con.addResponseListener((NetworkEvent evt) -> {
+            byte[] data = (byte[]) evt.getMetaData();
+            String s = new String(data);
+            System.out.println(s);
+            if (s.equalsIgnoreCase("success")) {
+            }
+            else {
+            }        
+        });
+        
+        NetworkManager.getInstance().addToQueueAndWait(con);
+      //  return succes;
+    }
+
      
     
     

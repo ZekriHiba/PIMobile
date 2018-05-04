@@ -13,7 +13,8 @@ public class Article {
     
 private int aricle_ID ;
 private String video;
-private  String title_Article,img;
+private String contenu;
+private String title_Article,img;
 private int user_ID;
 private SubTitleArticle title_st;
 private  static SubTitleArticle subtitlearticle=new SubTitleArticle();
@@ -28,8 +29,6 @@ private  static SubTitleArticle subtitlearticle=new SubTitleArticle();
         this.user_ID = user_ID;
         this.title_st = title_st;
     }
-
-    
 
     public int getAricle_ID() {
         return aricle_ID;
@@ -89,10 +88,19 @@ private  static SubTitleArticle subtitlearticle=new SubTitleArticle();
         this.video = video;
     }
 
+    public String getContenu() {
+        return contenu;
+    }
+
+    public void setContenu(String contenu) {
+        this.contenu = contenu;
+    }
+
     @Override
     public String toString() {
-        return "Article{" + "aricle_ID=" + aricle_ID + ", video=" + video + ", title_Article=" + title_Article + ", img=" + img + ", user_ID=" + user_ID + ", title_st=" + title_st + '}';
+        return "Article{" + "aricle_ID=" + aricle_ID + ", video=" + video + ", contenu=" + contenu + ", title_Article=" + title_Article + ", img=" + img + ", user_ID=" + user_ID + ", title_st=" + title_st + '}';
     }
+ 
     
     
 

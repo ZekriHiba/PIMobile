@@ -46,8 +46,9 @@ public class ServiceArticle {
                    //    float id = Float.parseFloat(obj.get("").toString());
                         
                         a.setTitle_Article(obj.get("Title_Article").toString());
-                     //   a.setImg(obj.get("Type").toString());
                         a.setImg(obj.get("image").toString());
+                        a.setVideo(obj.get("video").toString());
+                        a.setContenu(obj.get("contenu").toString());
                        
                        /* a.setDescription(obj.get("Description").toString());
                         a.setQuantity(Integer.parseInt(obj.get("Quantity").toString()));*/

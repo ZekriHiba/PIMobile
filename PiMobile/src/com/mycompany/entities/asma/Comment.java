@@ -12,18 +12,18 @@ package com.mycompany.entities.asma;
 public class Comment {
     
 private int user_ID;
-private int feed_ID;
+private String feed_ID;
 private String corp;
 
     public Comment() {
     }
 
-    public Comment(int user_ID, int feed_ID, String corp) {
+    public Comment(int user_ID, String feed_ID, String corp) {
         this.user_ID = user_ID;
         this.feed_ID = feed_ID;
         this.corp = corp;
     }
-    
+
     
     public int getUser_ID() {
         return user_ID;
@@ -33,14 +33,15 @@ private String corp;
         this.user_ID = user_ID;
     }
 
-    public int getFeed_ID() {
+    public String getFeed_ID() {
         return feed_ID;
     }
 
-    public void setFeed_ID(int feed_ID) {
+    public void setFeed_ID(String feed_ID) {
         this.feed_ID = feed_ID;
     }
 
+    
     public String getCorp() {
         return corp;
     }
@@ -53,7 +54,8 @@ private String corp;
     public String toString() {
         return "Comment{" + "user_ID=" + user_ID + ", feed_ID=" + feed_ID + ", corp=" + corp + '}';
     }
-    
+
+        
     
     
     
