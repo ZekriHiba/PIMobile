@@ -53,7 +53,7 @@ public class ShowVetos {
         v.setId(i);
                
        
-       enc=EncodedImage.createFromImage(theme.getImage("round.png"), false);
+       enc=EncodedImage.createFromImage(theme.getImage("round.png").scaled(500, 500), false);
         uRLImage=URLImage.createToStorage(enc, "test"+v.getId(),"http://localhost"+v.getImage(),URLImage.RESIZE_SCALE_TO_FILL);
         ImageViewer imgV=new ImageViewer(uRLImage);
        /* Image originalImage = imgV.getImage();

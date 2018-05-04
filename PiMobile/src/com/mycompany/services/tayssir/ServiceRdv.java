@@ -28,7 +28,7 @@ public class ServiceRdv {
      public ArrayList<String> getTimes(int id , String date) {
         ArrayList<String> listVetos = new ArrayList<>();
         ConnectionRequest con = new ConnectionRequest();
-        con.setUrl("http://localhost/WS/dispo.php?id="
+        con.setUrl("http://192.168.72.1/WS/dispo.php?id="
                 + id 
                 + "&date=" 
                 + date);
@@ -61,17 +61,21 @@ public class ServiceRdv {
         return listVetos;
     }
      
-     public void insertRdv(int userid , int vetid ,String date) {
+     public void insertRdv(int userid , int vetid ,String date,String time) {
          
          boolean  succes = false;
         ConnectionRequest con = new ConnectionRequest();
-        con.setUrl("http://localhost/WS/insertRDV.php?user_id="
+        con.setUrl("http://192.168.72.1/WS/insertRDV.php?user_id="
                 + userid
                 + "&vetid=" 
                 + vetid
                + "&date=" 
-                + date);
-     /*   con.addResponseListener((NetworkEvent evt) -> {
+                + date
+                + "&time=" 
+                + time
+        
+        );
+       con.addResponseListener((NetworkEvent evt) -> {
             byte[] data = (byte[]) evt.getMetaData();
             String s = new String(data);
             System.out.println(s);
@@ -80,10 +84,58 @@ public class ServiceRdv {
             }
             else {
             }        
-        });*/
+        });
         
         NetworkManager.getInstance().addToQueueAndWait(con);
       //  return succes;
+    }
+     
+      public ArrayList<Rdv> getRDVByUser(int id ) {
+        ArrayList<Rdv> listRDV = new ArrayList<>();
+        ConnectionRequest con = new ConnectionRequest();
+        con.setUrl("http://localhost/WS/getRDVbyUser?id="+id);
+        con.addResponseListener(new ActionListener<NetworkEvent>() {
+            @Override
+            public void actionPerformed(NetworkEvent evt) {
+                //listTasks = getListTask(new String(con.getResponseData()));
+                JSONParser jsonp = new JSONParser();
+
+                try {
+                    //renvoi une map avec clé = root et valeur le reste
+                    Map<String, Object> vetos = jsonp.parseJSON(new CharArrayReader(new String(con.getResponseData()).toCharArray()));
+                    vetos.put("rdv", vetos.remove("root"));
+                   
+                    List<Map<String, Object>> list = (List<Map<String, Object>>) vetos.get("rdv");
+
+                    for (Map<String, Object> obj : list) {
+                       
+                        Rdv rdv = new Rdv();
+                      /*  rdv.set(Float.parseFloat(obj.get("lat").toString()));
+                        rdv.setLongit(Float.parseFloat(obj.get("longit").toString()));
+                        rdv.setId((int) Float.parseFloat(obj.get("id").toString()));
+                        rdv.setPhone((int) Float.parseFloat(obj.get("phone").toString()));
+                        rdv.setVue((int) Float.parseFloat(obj.get("vue").toString()));
+                        rdv.setPrix((int) Float.parseFloat(obj.get("prix").toString()));
+                        rdv.setNom(obj.get("nomp").toString());
+                        rdv.setMail(obj.get("mail").toString());
+                        rdv.setVille(obj.get("ville").toString());
+                        rdv.setDescription(obj.get("description").toString());
+
+                        rdv.setGouv(obj.get("gouv").toString());
+                        rdv.setImage(obj.get("image").toString());
+                       
+                        
+                        
+                        listRDV.add(rdv);*/
+
+                    }
+                } catch (IOException ex) {
+                }
+
+            }
+        });
+        NetworkManager.getInstance().addToQueueAndWait(con);
+        return listRDV;
     }
      
      

@@ -26,7 +26,7 @@ public class ServiceVeto {
      public ArrayList<Veto> showVetos() {
         ArrayList<Veto> listVetos = new ArrayList<>();
         ConnectionRequest con = new ConnectionRequest();
-        con.setUrl("http://localhost/WS/getVetos.php");
+        con.setUrl("http://192.168.72.1/WS/getVetos.php");
 
         con.addResponseListener(new ActionListener<NetworkEvent>() {
             @Override
