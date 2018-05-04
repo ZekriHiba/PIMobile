@@ -457,10 +457,77 @@ public class AdoptionService {
         return listspecies;
     }
       
+      
+      
       public void ValiderReques(int id)
       {
           ConnectionRequest con = new ConnectionRequest();        
         con.setUrl("http://localhost/PIWeb33/web/app_dev.php/mobile/ValiderRequest/"+id);
         NetworkManager.getInstance().addToQueueAndWait(con);
       }
+      
+      
+      public ArrayList<Animal> SearchAdoption(String field) {
+        
+        ArrayList<Animal> listZanimo = new ArrayList<>();
+        ConnectionRequest con = new ConnectionRequest();
+        if (!field.trim().equals(""))
+        { con.setUrl("http://localhost/PIWeb33/web/app_dev.php/mobile/SearchAdoption/"+field);}
+        else {con.setUrl("http://localhost/PIWeb33/web/app_dev.php/mobile/SearchAdoption/null");}
+
+        con.addResponseListener(new ActionListener<NetworkEvent>() {
+            @Override
+            public void actionPerformed(NetworkEvent evt) {
+                //listTasks = getListTask(new String(con.getResponseData()));
+                JSONParser jsonp = new JSONParser();
+                 
+                try {String ss=new String(con.getResponseData(),"utf-8");
+                if(!ss.equals("{}"))
+                    //renvoi une map avec clÃ© = root et valeur le reste
+                { Map<String, Object> zanimo = jsonp.parseJSON(new CharArrayReader(new String(con.getResponseData()).toCharArray()));
+                    zanimo.put("Animal", zanimo.remove("root"));
+                   
+                   
+                  
+                    List<Map<String, Object>> list = (List<Map<String, Object>>) zanimo.get("Animal");
+                    for ( Map<String, Object> obj : list) {
+                        S_Species s = new S_Species(); 
+                        Animal a = new Animal();
+                        int id = (int)Float.parseFloat(obj.get("idAnimal").toString());
+                        a.setId_animal((int) id);
+                        
+                        s.setId_s_species((int)Float.parseFloat(obj.get("sSpeciesId").toString().substring(12,15)));
+                          
+                        a.setS(s);
+                        a.setSize((int)Float.parseFloat(obj.get("size").toString()));
+                        a.setWeight((int)Float.parseFloat(obj.get("weight").toString()));
+                        String myFormatString = "yyyy-MM-dd'T'HH:mm:ss.SSSX";
+                         
+                        String  c="1"+obj.get("age").toString().substring(114,122);
+                        int i=c.indexOf("E");
+                        String d=c.substring(0, i)+"00";
+                        if (d.length()==6){d=d+"0000";}
+                        if (d.length()==7){d=d+"000";}
+                        if (d.length()==8){d=d+"00";}
+                        if (d.length()==9){d=d+"0";}
+                        Date date1=new Date(Long.parseLong(d) * 1000L);
+                        a.setDescription(obj.get("description").toString());
+                        a.setImage1(obj.get("image").toString());
+                        a.setNick_Name(obj.get("nickName").toString());
+                        a.setColor(obj.get("color").toString());
+                        
+                        a.setGender(obj.get("gender").toString());
+                        
+                        
+                        listZanimo.add(a);
+
+                    }}
+                } catch (IOException ex) {
+                }
+
+            }
+        });
+        NetworkManager.getInstance().addToQueueAndWait(con);
+        return listZanimo;
+    }
 }

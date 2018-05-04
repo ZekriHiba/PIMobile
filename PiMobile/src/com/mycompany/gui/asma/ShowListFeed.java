@@ -37,8 +37,7 @@ private Form current;
     private Image urlImage;
     private ImageViewer imageviewer;
     private Toolbar tb;
-    private Form form;
-   
+    private Form form;   
 
     public ShowListFeed() {
     }
@@ -59,20 +58,13 @@ private Form current;
                 encodedImage=EncodedImage.createFromImage(theme.getImage("round.png"), false);
                 urlImage = URLImage.createToStorage(encodedImage, "brha"+i,"http://localhost"+f.getImage(),URLImage.RESIZE_SCALE_TO_FILL);
                 img =new ImageViewer(urlImage); 
-                
-             /*   img.addPointerDraggedListener(s->{
-                         fo = new Form("hello",BoxLayout.y());
-                         fo.show();
-                         });*/
-            ctn.add(img);
-            
-            titre= new Label(f.getTitle());
-            ctn.add(titre);
+                ctn.add(img);
+                titre= new Label(f.getTitle());
+                ctn.add(titre);
            
             
             titre.addPointerPressedListener((e)-> {
             ShowDetailFeed sda =new ShowDetailFeed(theme ,f);
-             
             sda.getForm().show();
         
              });

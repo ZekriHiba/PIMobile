@@ -15,6 +15,7 @@ import com.codename1.ui.layouts.BoxLayout;
 import com.codename1.ui.plaf.Border;
 import com.codename1.ui.plaf.Style;
 import com.mycompany.entities.Amal.Animal;
+import com.mycompany.entities.hiba.Session;
 import com.mycompany.services.Amal.AdoptionService;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -25,7 +26,8 @@ import java.util.ArrayList;
  */
 public class ShowAnimal {
       Form  f; 
-  
+  Session se=new Session();
+         int user=se.sessionId;
     
     public ShowAnimal(int id)  {
         
@@ -56,7 +58,7 @@ public class ShowAnimal {
                ImageViewer iv=new ImageViewer();
                
            try {
-               iv.setImage(Image.createImage("/"+ a.getImage()).scaled(100,100));
+               iv.setImage(Image.createImage("C:/wamp64/www/PIWeb33/web/Client/upload/"+ a.getImage()).scaled(100,100));
            } catch (IOException ex) {
                     System.out.println("err");
            }
@@ -113,9 +115,16 @@ public class ShowAnimal {
        
            
             f.add(c1);
-            f.add(b);
-            f.add(b1);
+            System.err.println(sp1.IsUser(a,user));
+            if(sp1.IsUser(a,user).equals("false"))
+            {f.add(b);}
+            else
+            {f.add(b1);}
+            
             f.show();
+            
+            
+
         }
 
     }

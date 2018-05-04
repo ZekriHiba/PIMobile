@@ -24,6 +24,7 @@ import com.codename1.ui.spinner.Picker;
 import com.mycompany.entities.Amal.Animal;
 import com.mycompany.entities.Amal.S_Species;
 import com.mycompany.entities.Amal.Species;
+import com.mycompany.entities.hiba.Session;
 import com.mycompany.services.Amal.AdoptionService;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -41,7 +42,9 @@ public class AddAnimal {
       f=new Form("Adoption",BoxLayout.y());
       f.getStyle().setBgImage(Image.createImage("/vitrine.png"));
       f.getAllStyles().setBackgroundType(Style.BACKGROUND_IMAGE_TILE_BOTH);
-         
+      
+         Session se=new Session();
+         int user=se.sessionId;
       
                Container c1 =new Container(BoxLayout.x());
                Container c3 =new Container(BoxLayout.y());
@@ -200,11 +203,8 @@ public class AddAnimal {
                    a.setStatus("Adption");
                    a.setConfirmation(0);
                    
-                   String matches="^[a-zA-Z]+$";
-                   String taill=taille.getText();
-                   String poid=poids.getText();
                  System.err.println("ajouteeeer");
-                     Animal list=sp1.insertAnimal(a);}
+                     Animal list=sp1.insertAnimal(a,user);}
                    
                    else if (  nickname.getText().trim().toString().length()==0
                          && color.getText().trim().toString().length()==0
