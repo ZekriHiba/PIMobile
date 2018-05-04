@@ -9,6 +9,7 @@ import com.codename1.components.SpanLabel;
 import com.codename1.ui.Button;
 import com.codename1.ui.CheckBox;
 import com.codename1.ui.ComboBox;
+import com.codename1.ui.Dialog;
 import com.codename1.ui.Display;
 import com.codename1.ui.Font;
 import com.codename1.ui.FontImage;
@@ -21,6 +22,7 @@ import com.codename1.ui.plaf.Style;
 import com.codename1.ui.plaf.UIManager;
 import com.mycompany.entities.Amal.Animal;
 import com.mycompany.entities.Amal.Request_Adoption;
+import com.mycompany.entities.hiba.Session;
 import com.mycompany.services.Amal.AdoptionService;
 import java.io.IOException;
 
@@ -39,7 +41,8 @@ public class AddRequest {
       f.getAllStyles().setBackgroundType(Style.BACKGROUND_IMAGE_TILE_BOTH);
 
                
-           
+           Session se=new Session();
+         int user=se.sessionId;
                
         //****************************les elements du containers********************************************************
               AdoptionService sp1=new AdoptionService();
@@ -188,7 +191,12 @@ public class AddRequest {
             
           
                b.addActionListener(e->{ 
+                   if ((eleveur.isSelected() || eleveurNon.isSelected()) && (garden.isSelected() || gardenNon.isSelected())
+                                   && (space.isSelected() || spaceNon.isSelected()) && (neighbour.isSelected() || neighbourNon.isSelected())
+                                   && (child.isSelected() || childNon.isSelected()) && (time.isSelected() || timeNon.isSelected()))
+              {
                    Form ff=new Form("Adoption",BoxLayout.y());
+                   ff.removeAll();
           try {
               ff.getStyle().setBgImage(Image.createImage("/vitrine.png"));
           } catch (IOException ex) {
@@ -220,10 +228,11 @@ public class AddRequest {
               ff.add(c);
               Button bf=new Button("add request");
               ff.add(bf);
-               ff.show();
+              ff.show();
+              
                
                bf.addActionListener(bff->{
-                       try {
+                       
                            Request_Adoption r=new Request_Adoption();
                            if(eleveur.isSelected()){r.setRaiser(true);}
                            else{r.setRaiser(false);}
@@ -259,12 +268,22 @@ public class AddRequest {
                            else{r.setFamilly(false);}
                            r.setDescription(description.getText());
                            if(c.isSelected()){r.setDescription("Nothing to add");}
-                           sp1.AddRequest(r,a.getId_animal());
-                           ShowAdoption sh=new ShowAdoption();
-                       } catch (IOException ex) {
-                       }
+                           if ((eleveur.isSelected() || eleveurNon.isSelected()) && (garden.isSelected() || gardenNon.isSelected())
+                                   && (space.isSelected() || spaceNon.isSelected()) && (neighbour.isSelected() || neighbourNon.isSelected())
+                                   && (child.isSelected() || childNon.isSelected()) && (time.isSelected() || timeNon.isSelected())
+                                   && (breed.isSelected() || breedNon.isSelected()) && (engagement.isSelected() || engagementNon.isSelected())
+                                   && (habits.isSelected() || habitsNon.isSelected()) && (charges.isSelected() || chargesNon.isSelected())
+                                   && (ready.isSelected() || readyNon.isSelected()) && (sacrifice.isSelected() || sacrificeNon.isSelected())
+                                   && ( familly.isSelected() || famillyNon.isSelected()) && (description.getText().toString().length()!=0|| c.isSelected()) )
+                               
+                           
+                           {sp1.AddRequest(r,a.getId_animal(),user);
+                           try {
+                           ShowAdoption sh=new ShowAdoption();} catch (IOException ex) {}}
+                            else {Dialog.show("Champs Obligatoire","Vueillez remplir tous les champs","ok", null);}
                });
-                
+              }
+              else {Dialog.show("Champs Obligatoire","Vueillez remplir tous les champs","ok", null);}
                });
                
                
