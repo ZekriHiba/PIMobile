@@ -27,7 +27,7 @@ public class PrendreRDV {
     
             
 
-    public PrendreRDV(Resources theme , String date , int vetid) {
+    public PrendreRDV(Resources theme , String date , int vetid , Veto v) {
         
               f=new Form(BoxLayout.y());
 
@@ -49,7 +49,8 @@ public class PrendreRDV {
             
 
             ArrayList<String> list =new ArrayList<>();
-            list = sr.getTimes(2,date);
+            
+            list = sr.getTimes(v.getId(),date);
             
            
             for(String s : list){
@@ -65,11 +66,19 @@ public class PrendreRDV {
                         
                  l.addPointerPressedListener((mo)->{
                      sr.insertRdv(5, vetid, date,l.getText());
+                     ShowVetos sv = new ShowVetos(theme);
+                     sv.getF().show();
                      
                  });
      //   cnt.setLeadComponent(l);
        
             }    
+          f.getToolbar().addCommandToLeftBar("retour", theme.getImage("back-command.png"), 
+                  (m)->{
+  
+          ShowSingleVetos ssv = new ShowSingleVetos(theme, v);
+          ssv.getF().show();
+          });
         
                 
        

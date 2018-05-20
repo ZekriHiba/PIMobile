@@ -28,7 +28,7 @@ public class ServiceRdv {
      public ArrayList<String> getTimes(int id , String date) {
         ArrayList<String> listVetos = new ArrayList<>();
         ConnectionRequest con = new ConnectionRequest();
-        con.setUrl("http://192.168.72.1/WS/dispo.php?id="
+        con.setUrl("http://localhost/WS/dispo.php?id="
                 + id 
                 + "&date=" 
                 + date);
@@ -110,23 +110,16 @@ public class ServiceRdv {
                     for (Map<String, Object> obj : list) {
                        
                         Rdv rdv = new Rdv();
-                      /*  rdv.set(Float.parseFloat(obj.get("lat").toString()));
-                        rdv.setLongit(Float.parseFloat(obj.get("longit").toString()));
                         rdv.setId((int) Float.parseFloat(obj.get("id").toString()));
-                        rdv.setPhone((int) Float.parseFloat(obj.get("phone").toString()));
-                        rdv.setVue((int) Float.parseFloat(obj.get("vue").toString()));
-                        rdv.setPrix((int) Float.parseFloat(obj.get("prix").toString()));
-                        rdv.setNom(obj.get("nomp").toString());
-                        rdv.setMail(obj.get("mail").toString());
-                        rdv.setVille(obj.get("ville").toString());
-                        rdv.setDescription(obj.get("description").toString());
-
-                        rdv.setGouv(obj.get("gouv").toString());
-                        rdv.setImage(obj.get("image").toString());
+                        rdv.setUser_id((int) Float.parseFloat(obj.get("user_id").toString()));
+                        rdv.setDate(obj.get("date").toString());
+                        rdv.setHeure(obj.get("date").toString());
+                        rdv.setVet_id((int) Float.parseFloat(obj.get("vetid").toString()));
+                       
                        
                         
                         
-                        listRDV.add(rdv);*/
+                        listRDV.add(rdv);
 
                     }
                 } catch (IOException ex) {
@@ -137,6 +130,16 @@ public class ServiceRdv {
         NetworkManager.getInstance().addToQueueAndWait(con);
         return listRDV;
     }
+      
+      public void DeleteAnimal(int id)
+    {
+    ConnectionRequest con = new ConnectionRequest();        
+        con.setUrl("http://localhost/WS/deleteRDV?id"+id);
+        NetworkManager.getInstance().addToQueueAndWait(con);
+    }
+     
+      
+    
      
      
      

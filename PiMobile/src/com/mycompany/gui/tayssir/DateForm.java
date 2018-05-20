@@ -90,10 +90,10 @@ class DateForm {
         
         );*/
         
-        Button  bt =  new Button ("Next");
+        Button  bt =  new Button ("Suivant");
         
         bt.addActionListener((e)->{
-            PrendreRDV pr = new PrendreRDV(theme, date_debut.getText(), v.getId());
+            PrendreRDV pr = new PrendreRDV(theme, date_debut.getText(), v.getId(),v);
             pr.getF().show();
             
         });

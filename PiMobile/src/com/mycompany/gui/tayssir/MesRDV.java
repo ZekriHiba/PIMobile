@@ -5,11 +5,21 @@
  */
 package com.mycompany.gui.tayssir;
 
+import com.codename1.components.ImageViewer;
+import com.codename1.l10n.SimpleDateFormat;
+import com.codename1.ui.Container;
+import com.codename1.ui.Display;
+import com.codename1.ui.EncodedImage;
 import com.codename1.ui.Form;
 import com.codename1.ui.Label;
+import com.codename1.ui.URLImage;
 import com.codename1.ui.layouts.BoxLayout;
+import com.codename1.ui.spinner.Picker;
 import com.codename1.ui.util.Resources;
+import com.mycompany.entities.tayssir.Rdv;
+import com.mycompany.entities.tayssir.Veto;
 import com.mycompany.services.tayssir.ServiceRdv;
+import com.mycompany.services.tayssir.ServiceVeto;
 import java.util.ArrayList;
 
 /**
@@ -22,68 +32,25 @@ public class MesRDV {
             
 
     public MesRDV(Resources theme, int userid) {
+        f = new Form ();
         
-              f=new Form(BoxLayout.y());
-
-                ServiceRdv sr = new ServiceRdv();
-            ArrayList<String> listDispo =new ArrayList<>();
-            listDispo.add("09:30");
-            listDispo.add("10:30");
-            listDispo.add("11:00");
-            listDispo.add("11:30");
-            listDispo.add("12:00");
-            listDispo.add("12:30");
-            listDispo.add("13:30");
-            listDispo.add("14:00");
-            listDispo.add("14:30");
-            listDispo.add("15:00");
-            listDispo.add("15:30");
-            listDispo.add("16:00");
-            
-            
-
-            ArrayList<String> list =new ArrayList<>();
-            //list = sr.getTimes(2,date);
-            
-           
-            for(String s : list){
-                listDispo.remove(s);
-                System.out.println(s);
-              //  Label l= new Label()
-            }
-            
-           for(String s : listDispo){
-                System.out.println(s); 
-                Label l =  new Label(s);
-                f.add(l);
-                        
-                 l.addPointerPressedListener((mo)->{
-                    // sr.insertRdv(5, vetid, date,l.getText());
-                     
-                 });
-     //   cnt.setLeadComponent(l);
-       
-            }    
         
-                
+        ServiceRdv sr=new ServiceRdv();
+        ArrayList<Rdv> list=sr.getRDVByUser(userid);
+        int i=0;
+        
+        ServiceVeto sv = new ServiceVeto();
+        for(Rdv rdv : list){
+        Container cnt = new Container(BoxLayout.x());
+        
+        Label  l  =  new Label();
+        
        
+       
+        
+        }
+        
     }
-  /*   f.getToolbar().addSearchCommand(e -> {
-            String t = (String)e.getSource();
-            if(t == null) {
-                t = "";
-            } else {
-                t = t.toLowerCase();
-            }
-            for(Component c : cnt) {
-                DemoComponent mb = (DemoComponent)c;
-                boolean show = t.length() == 0 || mb.getText().toLowerCase().indexOf(t) > -1;
-                mb.setVisible(show);
-                mb.setHidden(!show);
-            }
-            cnt.animateLayout(200);
-        }, 3);*/
-    
         
     
     
